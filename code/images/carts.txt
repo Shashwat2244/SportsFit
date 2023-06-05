@@ -1,0 +1,364 @@
+main.js
+
+let carts = document.querySelectorAll('.buttons');
+let products = [
+    {
+        name: 'Nike Basketball Shoes and Trainers',
+        tag: 'bbshoes1',
+        price: 3000,
+        inCart: 0
+    },{
+        name: 'Nike Football Shoes',
+        tag: 'fbshoes',
+        price: 2300,
+        inCart: 0
+    },{
+        name: 'Adidas Football Shoes',
+        tag: 'fbshoes2',
+        price: 2300,
+        inCart: 0
+    },{
+        name: 'Campus Sports Shoes',
+        tag: 'sportshoes1',
+        price: 2000,
+        inCart: 0
+    },{
+        name: 'PUMA Cricket Shoes',
+        tag: 'cricketshoes',
+        price: 1500,
+        inCart: 0
+    },{
+        name: 'Adidas Tennis Shoes',
+        tag: 'tennis',
+        price: 1800,
+        inCart: 0
+    },{
+        name: 'Kids Sports Shies',
+        tag: 'kidsshoes',
+        price: 800,
+        inCart: 0
+    },{
+        name: 'Asian Sports Shoes',
+        tag: 'asianshoes',
+        price: 2800,
+        inCart: 0
+    },{
+        name: 'New Balance Football Shoes',
+        tag: 'newbalance',
+        price: 22000,
+        inCart: 0
+    },{
+        name: 'Nike Football Shoes Black',
+        tag: 'nikeshoes',
+        price: 4000,
+        inCart: 0
+    },
+    {
+        name: "Adidas Men's T-Shirt",
+        tag: 'shirt1',
+        price: 3000,
+        inCart: 0
+    },{
+        name: "Nike Men's Lower Full",
+        tag: 'lower1',
+        price: 2300, 
+        inCart: 0
+    },{
+        name: "Men's Sports T-Shirt",
+        tag: 'shirt2',
+        price: 1600, 
+        inCart: 0
+    },{
+        name: "Real Madrid Men's T-Shirt",
+        tag: 'shirt3',
+        price: 3800, 
+        inCart: 0
+    },{
+        name: "Men's Lower ",
+        tag: 'lower2',
+        price: 1200, 
+        inCart: 0
+    },{
+        name: "Women's SportsWear",
+        tag: 'woman1',
+        price: 1600, 
+        inCart: 0
+    },{
+        name: "Nike Men's T-Shirt",
+        tag: 'shirt4',
+        price: 2000, 
+        inCart: 0
+    },{
+        name: "PUMA Men's T-Shirt",
+        tag: 'shirt5',
+        price: 2800, 
+        inCart: 0
+    },{
+        name: "PUMA Men's Shorts",
+        tag: 'shorts1',
+        price: 2000, 
+        inCart: 0
+    },{
+        name: "Women's Sports Outfit",
+        tag: 'woman2',
+        price: 2400, 
+        inCart: 0
+    },{
+        name: 'Adidas Football',
+        tag: 'football1',
+        price: 1800,
+        inCart: 0
+    },{
+        name: 'Nivia Football',
+        tag: 'football2',
+        price: 1700,
+        inCart: 0
+    },{
+        name: 'Spartan Cricket Bat',
+        tag: 'bat2',
+        price: 2200,
+        inCart: 0
+    },{
+        name: 'Cosco Basketball',
+        tag: 'basketball',
+        price: 1800,
+        inCart: 0
+    },{
+        name: 'Lycan Baseball Bat',
+        tag: 'baseballbat',
+        price: 2800,
+        inCart: 0
+    },{
+        name: 'SG Full Cricket Kit',
+        tag: 'cricketkit',
+        price: 7500,
+        inCart: 0
+    },{
+        name: 'Golf Kit',
+        tag: 'golf',
+        price: 32000,
+        inCart: 0
+    },{
+        name: 'Stag Table Tennis Set',
+        tag: 'tt',
+        price: 600,
+        inCart: 0
+    },{
+        name: 'Vampire Hockey Stick',
+        tag: 'hockey',
+        price: 1400,
+        inCart: 0
+    },{
+        name: 'Billiards Set with Table',
+        tag: 'pool',
+        price: 51000,
+        inCart: 0
+    }
+]
+
+
+
+for (let i=0; i<carts.length;i++){
+    carts[i].addEventListener('click',() =>{
+        cartNumbers(products[i]);
+        totalCost(products[i]);
+    })
+}
+
+function cartNumbers(product) {
+    
+    let productNumbers = localStorage.getItem('cartNumbers');
+    
+    productNumbers = parseInt(productNumbers);
+    if(productNumbers){
+        localStorage.setItem('cartNumbers',productNumbers + 1);
+    }else{
+        localStorage.setItem('cartNumbers',1);
+       
+    }
+    setItems(product);
+}
+
+function setItems(product){
+    let cartItems = localStorage.getItem('productsInCart');
+    cartItems = JSON.parse(cartItems);
+
+    if(cartItems != null){
+        if(cartItems[product.tag] == undefined){
+            cartItems = {
+                ...cartItems,
+                [product.tag]: product
+            }
+        }
+        cartItems[product.tag].inCart += 1; 
+    }else{
+        product.inCart = 1;
+        cartItems = {
+            [product.tag]:product
+        }
+    }
+    
+    localStorage.setItem("productsInCart",JSON.stringify(cartItems));
+}
+
+function totalCost(product){
+   // console.log("The Product Price is", product.price);
+   let cartCost = localStorage.getItem('totalCost');
+   
+   console.log("my cart cost is",cartCost);
+
+   if(cartCost !=null){
+    cartCost = parseInt(cartCost);
+    localStorage.setItem("totalCost", cartCost + product.price);
+   }else{
+    localStorage.setItem("totalCost", product.price);
+   }
+
+}
+
+function displayCart(){
+    let cartItems = localStorage.getItem("productsInCart");
+    cartItems = JSON.parse(cartItems);
+let productContainer = document.querySelector(".products");
+    
+    
+     let cartCost = localStorage.getItem('totalCost');
+
+    console.log(cartItems);
+    if(cartItems && productContainer){
+        productContainer.innerHTML = '';
+        Object.values(cartItems).map(item => {
+            productContainer.innerHTML += `
+            <div class="product">
+           <ion-icon name="close-circle-outline"></ion-icon>            <img src="img/${item.tag}.jpeg">
+            <span>${item.name}</span>
+            </div>
+            <div class="price">${item.price}</div>
+            <div class="quantity">Quantity : <span>${item.inCart}</span></div>
+            <div class="total">&#8377;${item.inCart * item.price}.00</div>
+            `
+        });
+
+        productContainer.innerHTML += `   
+        <div class="basketTotalContainer">
+        <h4 class="basketTotalTitle">
+        Basket Total</h4>
+        <h4 class="basketTotal">&#8377; ${cartCost}.00</h4>
+        </div>
+     `   
+    }
+}
+
+function remove(){
+    localStorage.clear();
+}
+
+displayCart();
+
+cart.HTML
+
+<div class="products-container">
+            <div class="product-header">
+                <h5 class="product-title">PRODUCT</h5>
+            </div>
+            <div class="products">
+
+            </div>
+            <button class="remove" type="submit" onclick="remove()">Remove All</button>
+        </div>
+
+cart.css
+
+.products{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.products-container{
+    margin: 0 auto;
+    margin-top: 200px;
+    color: white;
+    max-width: 650px;
+    justify-content: space-around;
+}
+
+.product-header{
+    width: 100%;
+    max-width: 650px;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 4px solid lightgrey;
+    margin: 0 auto;
+}
+
+.product-title{
+    width: 45%;
+}
+.price{
+    width: 15%;
+    display: flex;
+    border-bottom: 1px solid lightgrey;
+    align-items: center;
+}
+
+.quantity {
+    width: 30%;
+    display: flex;
+    border-bottom: 1px solid lightgrey;
+    align-items: center;
+}
+
+.total {
+    width: 10%;
+    display: flex;
+    border-bottom: 1px solid lightgrey;
+    align-items: center;
+}
+
+.product {
+    width: 45%;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid lightgrey;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.products-container ion-icon{
+    font-size: 25px;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    color: white;
+
+}
+
+.total{
+    color: white;
+}
+
+.basketTotal{
+    color: white;
+}
+
+.basketTotalContainer{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 10px 0;
+    border-top: 4px solid lightgrey;
+}
+
+.basketTotal{
+    width: 10%;
+}
+.basketTotalTitle{
+    width: 30%;
+}
+
+.remove{
+    background-color: white;
+    width: 100px;
+    height: 40px;
+}
